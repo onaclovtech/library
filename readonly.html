@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html ng-app="myapp" manifest="covers.appcache">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.6/angular.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/1.0.11/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
+   
+  </head>
+  <body ng-controller="MyController">
+    Book Covers Provided by <a href="https://openlibrary.org/dev/docs/api/covers">OpenLibrary</a>
+    <div align="left">
+       <input type="text" ng-model="search" placeholder="Search" style="width:100%;font-size:24px;">
+    </div>
+<br />
+    <div>
+{{data}}
+{{status}}
+{{title}}
+{{author}}
+      <div align="left" ng-repeat="(id , book) in books |  filter:search">
+         <div align="center"><img src="http://covers.openlibrary.org/b/isbn/{{book.isbn}}-S.jpg"/> <br />
+         <em>{{book.title}}</em><br />
+         <small>ISBN: {{book.isbn}} </small><br />
+         <button type="button" ng-click="fetch(book.isbn,id)">Fetch Data</button> <!-- This should be used when we "add" a book, get rid of "book" in that context though -->
+         </div>
+      </div>
+    </div>
+ <script>
+      var app = angular.module("myapp", ["firebase"]);
+      /**
+ *  Cors usage example. 
+ *  @author Georgi Naumov
+ *  gonaumov@gmail.com for contacts and 
+ *  suggestions. 
+ **/ 
+app.config(function($httpProvider) {
+    //Enable cross domain calls
+    $httpProvider.defaults.useXDomain = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+});
+      function MyController($scope, $firebase, $http) {
+        var FB = ""; // Enter in your FB URL that you want to "view" your library
+        var ref = new Firebase(FB);
+        $scope.books = $firebase(ref);
+        $scope.fetch = function(isbn,key) {
+           $scope.method = 'GET';
+           
+           $scope.url = "http://openlibrary.org/search.json?isbn=";
+
+        $http({method: $scope.method, url: $scope.url + isbn  
+                }).
+        success(function(data, status) {
+          $scope.status = status;
+          $scope.data = data;
+          if (data["docs"][0] != "")
+          {
+             //book.title = data["docs"][0]["title"];
+             //book.author = data["docs"][0]["author"];
+             $scope.title = data["docs"][0]["title"];
+             //$scope.author = data["docs"][0]["author"];
+             var locRef = new Firebase(FB + key); // This will take your URL and append a KEY so you can modify the contents, this is a temporary workaround for other issues
+             var updateItem = $firebase(locRef);
+             updateItem.$update({"title":data["docs"][0]["title"]});
+             
+          }
+
+         }).
+         error(function(data, status) {
+            $scope.data = data;
+            $scope.status = status;
+         });
+};
+      }
+    </script>
+
+  </body>
+</html>
