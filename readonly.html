@@ -32,12 +32,7 @@
     </div>
  <script>
       var app = angular.module("myapp", ["firebase"]);
-      /**
- *  Cors usage example. 
- *  @author Georgi Naumov
- *  gonaumov@gmail.com for contacts and 
- *  suggestions. 
- **/ 
+
 app.config(function($httpProvider) {
     //Enable cross domain calls
     $httpProvider.defaults.useXDomain = true;
@@ -60,10 +55,7 @@ app.config(function($httpProvider) {
           $scope.data = data;
           if (data["docs"][0] != "")
           {
-             //book.title = data["docs"][0]["title"];
-             //book.author = data["docs"][0]["author"];
              $scope.title = data["docs"][0]["title"];
-             //$scope.author = data["docs"][0]["author"];
              var locRef = new Firebase(FB + key); // This will take your URL and append a KEY so you can modify the contents, this is a temporary workaround for other issues
              var updateItem = $firebase(locRef);
              updateItem.$update({"title":data["docs"][0]["title"]});
