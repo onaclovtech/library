@@ -73,7 +73,8 @@ body {
 
       function MyController($scope, $firebase, $http) {
         var FB = ""; // Enter your Firebase URL here
-        var ref = new Firebase(FB + "library/tyson");
+        var name = "";
+        var ref = new Firebase(FB + "library/" + name);
         $scope.books = $firebase(ref);
         var ref2 = new Firebase(FB + "all");
         $scope.all = $firebase(ref2.limit(1));
