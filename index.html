@@ -43,7 +43,7 @@ body {
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">{{filteredBooks.length}} Library Books in your Library</a>
+          <a class="navbar-brand" href="#">{{filteredBooks.length}} Library Books Visible in your Library</a>
         </div>
 
       </div>
@@ -53,13 +53,25 @@ body {
     
     
      <div ng-repeat="(id,book) in filteredBooks = (books | orderByPriority | filter:search)">
-      <div ng-class="row" ng-show="$index % 2 == 0">
-         <div class="col-md-2" src="#">
-            <img src="http://covers.openlibrary.org/b/isbn/{{book.isbn}}-M.jpg"/> <br />
-            <small><em>{{book.title}}</em></small><br />
-            <small>ISBN: {{book.isbn}} </small><br />
+      <span ng-switch="" on="$index % 3">
+         <div ng-class="row" ng-switch-when="0">
+            <div class="col-md-4" src="#" ng-show="filteredBooks[$index+0]">
+               <img src="http://covers.openlibrary.org/b/isbn/{{filteredBooks[$index+0].isbn}}-M.jpg"/> <br />
+               <small><em>{{filteredBooks[$index+0].title}}</em></small><br />
+               <small>ISBN: {{filteredBooks[$index+0].isbn}} </small><br />
+            </div>
+            <div class="col-md-4" src="#" ng-show="filteredBooks[$index+1]">
+               <img src="http://covers.openlibrary.org/b/isbn/{{filteredBooks[$index+1].isbn}}-M.jpg"/> <br />
+               <small><em>{{filteredBooks[$index+1].title}}</em></small><br />
+               <small>ISBN: {{filteredBooks[$index+1].isbn}} </small><br />
+            </div>
+            <div class="col-md-4" src="#" ng-show="filteredBooks[$index+2]">
+               <img src="http://covers.openlibrary.org/b/isbn/{{filteredBooks[$index+2].isbn}}-M.jpg"/> <br />
+               <small><em>{{filteredBooks[$index+2].title}}</em></small><br />
+               <small>ISBN: {{filteredBooks[$index+2].isbn}} </small><br />
+            </div>
          </div>
-      </div>
+      </span>
    </div>
  <script>
       var app = angular.module("myapp", ["firebase"]);
@@ -72,11 +84,11 @@ body {
 });
 
       function MyController($scope, $firebase, $http) {
-        var FB = ""; // Enter your Firebase URL here
-        var name = "";
+        var FB = ""; //your Firebase address
+        var name = ""; // your name
         var ref = new Firebase(FB + "library/" + name);
         $scope.books = $firebase(ref);
-        var ref2 = new Firebase(FB + "all");
+        var ref2 = new Firebase(FB + "library/all");
         $scope.all = $firebase(ref2.limit(1));
         $scope.addBook = function(e) {
           $scope.method = 'GET';
@@ -89,7 +101,7 @@ body {
           $scope.data = data;
           if (data["docs"] != "")
           {
-             //$scope.title = data["docs"][0]["title"];
+             
              $scope.books.$add({"title":data["docs"][0]["title"], isbn : $scope.isbn});
              $scope.all.$add({"title":data["docs"][0]["title"], isbn : $scope.isbn});
           }
@@ -101,8 +113,6 @@ body {
          });
          
          
-         // $scope.books.$add({title: $scope.title, isbn : $scope.isbn, series : $scope.series});
-         // $scope.all.$add({title: $scope.title, isbn : $scope.isbn, series : $scope.series}); 
         }
       }
     </script>
