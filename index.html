@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html ng-app="myapp" manifest="covers.appcache">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.6/angular.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/1.0.11/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
+   <!-- Latest compiled and minified CSS -->
+   <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<style type="text/css">
+<!--
+   /* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+-->
+</style>
+   <!-- Optional theme -->
+   <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+  </head>
+  <body ng-controller="MyController">
+    
+    
+    
+    Book Covers Provided by <a href="https://openlibrary.org/dev/docs/api/covers">OpenLibrary</a>
+    <div align="left">
+       <input type="text" ng-model="isbn" placeholder="Add ISBN" style="width:100%;font-size:24px;"><button type="button" class="btn btn-primary btn-lg active" ng-click="addBook()">Add Book</button> </input>
+    </div>
+<br />
+    <div>
+
+ <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">{{filteredBooks.length}} Library Books in your Library</a>
+        </div>
+
+      </div>
+    </div>
+    
+       <input type="text" ng-model="search" placeholder="Search" style="width:100%;font-size:24px;">
+    
+    
+     <div ng-repeat="(id,book) in filteredBooks = (books | orderByPriority | filter:search)">
+      <div ng-class="row" ng-show="$index % 2 == 0">
+         <div class="col-md-2" src="#">
+            <img src="http://covers.openlibrary.org/b/isbn/{{book.isbn}}-M.jpg"/> <br />
+            <small><em>{{book.title}}</em></small><br />
+            <small>ISBN: {{book.isbn}} </small><br />
+         </div>
+      </div>
+   </div>
+ <script>
+      var app = angular.module("myapp", ["firebase"]);
+      
+      app.config(function($httpProvider) {
+    //Enable cross domain calls
+    $httpProvider.defaults.useXDomain = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+});
+
+      function MyController($scope, $firebase, $http) {
+        var FB = ""; // Enter your Firebase URL here
+        var ref = new Firebase(FB + "library/tyson");
+        $scope.books = $firebase(ref);
+        var ref2 = new Firebase(FB + "all");
+        $scope.all = $firebase(ref2.limit(1));
+        $scope.addBook = function(e) {
+          $scope.method = 'GET';
+           
+           $scope.url = "http://openlibrary.org/search.json?isbn=";
+          $http({method: $scope.method, url: $scope.url + $scope.isbn  
+                }).
+        success(function(data, status) {
+          $scope.status = status;
+          $scope.data = data;
+          if (data["docs"] != "")
+          {
+             //$scope.title = data["docs"][0]["title"];
+             $scope.books.$add({"title":data["docs"][0]["title"], isbn : $scope.isbn});
+             $scope.all.$add({"title":data["docs"][0]["title"], isbn : $scope.isbn});
+          }
+
+         }).
+         error(function(data, status) {
+            $scope.data = data;
+            $scope.status = status;
+         });
+         
+         
+         // $scope.books.$add({title: $scope.title, isbn : $scope.isbn, series : $scope.series});
+         // $scope.all.$add({title: $scope.title, isbn : $scope.isbn, series : $scope.series}); 
+        }
+      }
+    </script>
+  </body>
+</html>
