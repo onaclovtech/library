@@ -8,7 +8,7 @@ app.config(function($httpProvider)
   $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 });
 
-function MyController($scope, $firebase, $http) 
+function LibController($scope, $firebase, $http) 
 {
   var FB = ""; //your Firebase address
   var name = ""; // your name
