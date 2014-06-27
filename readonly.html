@@ -61,46 +61,7 @@ body {
       <hr>
       
     </div>
- <script>
-      var app = angular.module("myapp", ["firebase"]);
-      
-app.config(function($httpProvider) {
-    //Enable cross domain calls
-    $httpProvider.defaults.useXDomain = true;
-    delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-});
-      function MyController($scope, $firebase, $http) {
-        var FB = ""; // your Firebase URL
-        var ref = new Firebase(FB);
-        $scope.books = $firebase(ref);
-        $scope.fetch = function(isbn,key) {
-           $scope.method = 'GET';
-           
-           $scope.url = "http://openlibrary.org/search.json?isbn=";
-
-        $http({method: $scope.method, url: $scope.url + isbn  
-                }).
-        success(function(data, status) {
-          $scope.status = status;
-          $scope.data = data;
-          if (data["docs"][0] != "")
-          {
-             $scope.title = data["docs"][0]["title"];
-             var locRef = new Firebase(FB + key);
-             var updateItem = $firebase(locRef);
-             updateItem.$update({"title":data["docs"][0]["title"]});
-             
-          }
-
-         }).
-         error(function(data, status) {
-            $scope.data = data;
-            $scope.status = status;
-         });
-};
-      }
-    </script>
+ <script src="library.js"></script>
 
   </body>
 </html>
