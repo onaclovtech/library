@@ -40,7 +40,7 @@
 
     <div ng-repeat="(id,book) in filteredBooks = (books | orderByPriority | filter:search)">
       <span ng-switch="" on="$index % 3">
-        <div ng-class="row" ng-switch-when="0">
+        <div class="row" ng-switch-when="0">
           <div class="col-md-4" src="#" ng-show="filteredBooks[$index+0]">
             <img src="http://covers.openlibrary.org/b/isbn/{{filteredBooks[$index+0].isbn}}-M.jpg"/> <br />
             <small><em>{{filteredBooks[$index+0].title}}</em></small><br />
