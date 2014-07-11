@@ -12,10 +12,8 @@ function LibController($scope, $firebase, $http)
 {
   var FB = ""; //your Firebase address
   var name = ""; // your name
-  var ref = new Firebase(FB + "library/" + name);
+  var ref = new Firebase(FB);
   $scope.books = $firebase(ref);
-  var ref2 = new Firebase(FB + "library/all");
-  $scope.all = $firebase(ref2.limit(1));
   $scope.addBook = function(e) 
   {
     $scope.method = 'GET';
@@ -29,7 +27,6 @@ function LibController($scope, $firebase, $http)
         if (data["docs"] != "")
         {
           $scope.books.$add({"title":data["docs"][0]["title"], isbn : $scope.isbn});
-          $scope.all.$add({"title":data["docs"][0]["title"], isbn : $scope.isbn});
         }
       }).
       error(function(data, status) 
