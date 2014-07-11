@@ -17,11 +17,6 @@
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
   </head>
   <body ng-controller="LibController">
-    Book Covers Provided by <a href="https://openlibrary.org/dev/docs/api/covers">OpenLibrary</a>
-    <div align="left">
-      <input type="text" ng-model="isbn" placeholder="Add ISBN" style="width:100%;font-size:24px;"><button type="button" class="btn btn-primary btn-lg active" ng-click="addBook()">Add Book</button> </input>
-    </div>
-    <br />
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -34,10 +29,14 @@
           <a class="navbar-brand" href="#">{{filteredBooks.length}} Library Books Visible in your Library</a>
         </div>
       </div>
+      Book Covers Provided by <a href="https://openlibrary.org/dev/docs/api/covers">OpenLibrary</a>
+    <div align="left">
+      <input type="text" ng-model="isbn" placeholder="Add ISBN" style="width:100%;font-size:24px;"><button type="button" class="btn btn-primary btn-lg active" ng-click="addBook()">Add Book</button> </input>
+    </div>
+      <input type="text" ng-model="search" placeholder="Search" style="width:100%;font-size:24px;">
     </div>
 
-    <input type="text" ng-model="search" placeholder="Search" style="width:100%;font-size:24px;">
-
+    
     <div ng-repeat="(id,book) in filteredBooks = (books | orderByPriority | filter:search)">
       <span ng-switch="" on="$index % 3">
         <div class="row" ng-switch-when="0">
