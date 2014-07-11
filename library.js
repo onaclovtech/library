@@ -11,7 +11,6 @@ app.config(function($httpProvider)
 function LibController($scope, $firebase, $http) 
 {
   var FB = ""; //your Firebase address
-  var name = ""; // your name
   var ref = new Firebase(FB);
   $scope.books = $firebase(ref);
   $scope.addBook = function(e) 
